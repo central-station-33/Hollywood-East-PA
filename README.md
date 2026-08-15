@@ -1,4 +1,4 @@
-# InRange Crew
+# Hollywood East PA
 
 A two-sided marketplace for vetted, "Set-Ready" Production Assistants and
 Coordinators in the NY/NJ ("Hollywood East") film & TV corridor. Producers

@@ -1,4 +1,4 @@
--- InRange Crew: Virtual PA & Coordinator staffing platform
+-- Hollywood East PA: Virtual PA & Coordinator staffing platform
 -- Core schema: profiles, PA vetting, productions, gigs, dispatch, notifications
 
 create extension if not exists "pgcrypto";

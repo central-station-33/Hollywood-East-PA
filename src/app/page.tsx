@@ -23,7 +23,7 @@ const COMPARISON_ROWS: Array<{ metric: string; values: [string, string, string, 
   },
 ];
 
-const COLUMN_HEADERS = ["Traditional Agencies", "Job Boards", "Informal Texting / FB", "InRange Crew"];
+const COLUMN_HEADERS = ["Traditional Agencies", "Job Boards", "Informal Texting / FB", "Hollywood East PA"];
 
 export default function Home() {
   return (
@@ -37,7 +37,7 @@ export default function Home() {
             Vetted, set-ready PAs and Coordinators — dispatched instantly.
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600">
-            InRange Crew replaces the 10&nbsp;PM Facebook post and the unmanaged job board with a
+            Hollywood East PA replaces the 10&nbsp;PM Facebook post and the unmanaged job board with a
             tech-enabled staffing platform: tax-credit-verified residency, certified on-set
             training, and automatic matching for every call time in the NY/NJ corridor.
           </p>
@@ -64,7 +64,7 @@ export default function Home() {
         </h2>
         <p className="mx-auto mt-2 max-w-2xl text-center text-slate-600">
           Full-service agencies with high overhead, or self-serve job boards and Facebook groups
-          with zero vetting. InRange Crew sits at the intersection of technology, training, and
+          with zero vetting. Hollywood East PA sits at the intersection of technology, training, and
           tax-credit compliance.
         </p>
 

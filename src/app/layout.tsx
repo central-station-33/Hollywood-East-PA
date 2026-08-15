@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "InRange Crew — Vetted PAs & Coordinators for NY/NJ Productions",
+  title: "Hollywood East PA — Vetted PAs & Coordinators for NY/NJ Productions",
   description:
     "Tech-enabled, tax-credit-verified, set-ready PA and Coordinator staffing for the Hollywood East corridor.",
 };
