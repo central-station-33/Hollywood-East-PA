@@ -56,7 +56,7 @@ See `supabase/migrations/`:
    supabase db push
    ```
 3. Copy `.env.example` to `.env.local` and fill in your project's URL and
-   anon key (Project Settings → API).
+   publishable key (Project Settings → API).
 4. In the Supabase dashboard, under Authentication → Providers, you can
    disable "Confirm email" for faster local testing.
 5. `npm install && npm run dev`
