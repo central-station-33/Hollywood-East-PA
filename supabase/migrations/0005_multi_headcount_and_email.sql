@@ -33,6 +33,11 @@ $$;
 -- invite) on the FIRST acceptance, ignoring gigs.headcount. Make it count
 -- accepted dispatches and only fill once headcount is reached, so a gig
 -- needing 3 PAs actually collects 3 acceptances.
+--
+-- Also guards against a double-submit/retry of the same accept call: the
+-- accept UPDATE is now conditioned on status = 'invited' (a compare-and-swap)
+-- with `if not found` raising, instead of trusting an earlier in-memory
+-- status check that a concurrent call on the same dispatch could race past.
 create or replace function public.accept_dispatch(p_dispatch_id uuid)
 returns void
 language plpgsql
@@ -50,12 +55,9 @@ begin
     raise exception 'Not authorized';
   end if;
 
-  if v_dispatch.status <> 'invited' then
-    raise exception 'This invite is no longer active';
-  end if;
-
-  -- Locks the gig row so concurrent accepts on the same gig serialize
-  -- instead of both slipping past the headcount check.
+  -- Locks the gig row so concurrent accepts on the same gig serialize —
+  -- each waiting call re-reads the post-commit gig status once unblocked,
+  -- rather than acting on a stale in-memory read.
   select * into v_gig from public.gigs where id = v_dispatch.gig_id for update;
 
   if v_gig.status <> 'open' then
@@ -64,7 +66,11 @@ begin
 
   update public.dispatches
   set status = 'accepted', responded_at = now()
-  where id = p_dispatch_id;
+  where id = p_dispatch_id and status = 'invited';
+
+  if not found then
+    raise exception 'This invite is no longer active';
+  end if;
 
   select count(*) into v_accepted_count
   from public.dispatches
