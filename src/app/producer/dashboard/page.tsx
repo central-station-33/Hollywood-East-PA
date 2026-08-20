@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { createGig } from "@/app/actions/gigs";
+import { cancelGig, createGig, inviteSpecificPa } from "@/app/actions/gigs";
 import type { Dispatch, Gig, Profile } from "@/lib/types/database";
 
 function formatCallTime(iso: string) {
@@ -46,6 +47,18 @@ export default async function ProducerDashboardPage({
 
   const typedGigs = (gigs ?? []) as unknown as GigWithDispatches[];
 
+  const { data: setReadyPas } = await supabase
+    .from("pa_profiles")
+    .select("profile_id, home_state, role_types, profiles(full_name)")
+    .eq("set_ready", true);
+
+  const eligiblePas = (setReadyPas ?? []) as unknown as Array<{
+    profile_id: string;
+    home_state: string | null;
+    role_types: string[];
+    profiles: Pick<Profile, "full_name"> | null;
+  }>;
+
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       <h1 className="text-2xl font-semibold text-slate-900">Post a call time</h1>
@@ -61,6 +74,19 @@ export default async function ProducerDashboardPage({
       {params.created && (
         <p className="mt-4 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
           Gig posted — matching Set-Ready PAs have been invited.
+        </p>
+      )}
+      {params.invited && (
+        <p className="mt-4 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">PA invited.</p>
+      )}
+      {params.cancelled && (
+        <p className="mt-4 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+          Gig cancelled — any confirmed PAs have been notified.
+        </p>
+      )}
+      {params.updated && (
+        <p className="mt-4 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+          Gig updated — any confirmed PAs have been notified.
         </p>
       )}
 
@@ -184,6 +210,8 @@ export default async function ProducerDashboardPage({
           const confirmedCount = (gig.dispatches ?? []).filter(
             (d) => d.status === "accepted" || d.status === "confirmed"
           ).length;
+          const dispatchedPaIds = new Set((gig.dispatches ?? []).map((d) => d.pa_id));
+          const invitablePas = eligiblePas.filter((pa) => !dispatchedPaIds.has(pa.profile_id));
 
           return (
           <div key={gig.id} className="rounded-lg border border-slate-200 bg-white p-4">
@@ -207,6 +235,19 @@ export default async function ProducerDashboardPage({
               </div>
             </div>
 
+            <div className="mt-3 flex gap-3 text-sm font-medium">
+              <Link href={`/producer/gigs/${gig.id}/edit`} className="text-indigo-600 hover:text-indigo-500">
+                Edit
+              </Link>
+              {gig.status !== "cancelled" && (
+                <form action={cancelGig.bind(null, gig.id)}>
+                  <button type="submit" className="text-red-600 hover:text-red-500">
+                    Cancel gig
+                  </button>
+                </form>
+              )}
+            </div>
+
             <div className="mt-3 border-t border-slate-100 pt-3">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
                 Dispatch status ({gig.dispatches?.length ?? 0} invited)
@@ -228,6 +269,36 @@ export default async function ProducerDashboardPage({
                 )}
               </ul>
             </div>
+
+            {gig.status === "open" && invitablePas.length > 0 && (
+              <form
+                action={inviteSpecificPa.bind(null, gig.id)}
+                className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3"
+              >
+                <select
+                  name="pa_id"
+                  required
+                  defaultValue=""
+                  className="flex-1 rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+                >
+                  <option value="" disabled>
+                    Manually invite a Set-Ready PA…
+                  </option>
+                  {invitablePas.map((pa) => (
+                    <option key={pa.profile_id} value={pa.profile_id}>
+                      {pa.profiles?.full_name ?? "PA"} — {pa.home_state ?? "?"} ·{" "}
+                      {pa.role_types.join(", ") || "no roles set"}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="submit"
+                  className="shrink-0 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium hover:bg-slate-50"
+                >
+                  Invite
+                </button>
+              </form>
+            )}
           </div>
           );
         })}

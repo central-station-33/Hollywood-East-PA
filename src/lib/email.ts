@@ -63,6 +63,21 @@ export async function sendGigInviteEmail(params: {
   });
 }
 
+export async function sendGigStatusEmail(params: {
+  to: string;
+  gigTitle: string;
+  message: string;
+}) {
+  await sendEmail({
+    to: params.to,
+    subject: `Update on ${params.gigTitle}`,
+    html: `
+      <p>${params.message}</p>
+      <p><a href="${appUrl("/pa/dashboard")}">View on your dashboard</a></p>
+    `,
+  });
+}
+
 export async function sendGigAcceptedEmail(params: {
   to: string;
   paName: string;

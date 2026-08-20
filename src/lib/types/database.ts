@@ -108,6 +108,18 @@ export type Database = {
         Args: { p_dispatch_id: string };
         Returns: undefined;
       };
+      invite_pa_to_gig: {
+        Args: { p_gig_id: string; p_pa_id: string };
+        Returns: undefined;
+      };
+      notify_accepted_pas: {
+        Args: { p_gig_id: string; p_message: string };
+        Returns: undefined;
+      };
+      cancel_gig: {
+        Args: { p_gig_id: string };
+        Returns: undefined;
+      };
     };
   };
 };
