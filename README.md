@@ -49,6 +49,13 @@ See `supabase/migrations/`:
 - `0002_storage.sql` — private `tax-docs` storage bucket + per-user policies.
 - `0003_functions.sql` — `dispatch_gig_to_matches`, `accept_dispatch`,
   `decline_dispatch` security-definer functions.
+- `0004_disable_tax_residency_gate.sql` — Set-Ready no longer requires a
+  verified tax-residency doc, just a passed course (temporary; the
+  requirement can be restored by editing the `set_ready` generated column).
+- `0005_multi_headcount_and_email.sql` — adds `profiles.email` (so server
+  actions can send notification emails without the service-role admin API)
+  and fixes `accept_dispatch` to fill a gig only once accepted PAs reach
+  `gigs.headcount`, instead of on the first acceptance.
 
 ## Setup
 
@@ -63,7 +70,16 @@ See `supabase/migrations/`:
    publishable key (Project Settings → API).
 4. In the Supabase dashboard, under Authentication → Providers, you can
    disable "Confirm email" for faster local testing.
-5. `npm install && npm run dev`
+5. (Optional but recommended) Create a free [Resend](https://resend.com)
+   account, grab an API key, and set `RESEND_API_KEY` — this enables real
+   email delivery for gig invites and acceptances (`src/lib/email.ts`).
+   Without it, those emails are just logged, not sent; the app still works,
+   PAs and producers just have to check the in-app notification bell
+   (`/notifications`) instead of getting emailed. Resend's shared
+   `onboarding@resend.dev` sender works for testing without verifying a
+   domain; verify your own domain in Resend before relying on this for
+   real productions, for better deliverability.
+6. `npm install && npm run dev`
 
 ## Roles
 
@@ -80,7 +96,9 @@ update profiles set role = 'admin' where id = '<user-uuid>';
   are tracked as data only; actual pay runs through your existing payroll
   provider (e.g. Wrapbook) — see the competitive analysis this app was built
   from for why that integration is a "later" step, not a "day one" one.
-- **SMS/email delivery.** New invites land in the in-app `notifications`
-  table and the PA dashboard's "New invites" list. Wiring real-time SMS
-  (Twilio) or email (Resend) push is a follow-up — the `dispatch_gig_to_matches`
-  function is already the right place to trigger it.
+- **SMS delivery.** Email notifications are wired up (`src/lib/email.ts`,
+  via Resend), but SMS push is still a follow-up — it needs a Twilio
+  account and per-message cost, and is the natural next step for the "5 AM
+  call time" urgency this product is positioned around. The same
+  `dispatch_gig_to_matches` / `accept_dispatch` call sites that trigger
+  email are the right place to add it.

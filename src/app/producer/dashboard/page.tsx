@@ -180,7 +180,12 @@ export default async function ProducerDashboardPage({
         {typedGigs.length === 0 && (
           <p className="text-sm text-slate-500">No gigs posted yet.</p>
         )}
-        {typedGigs.map((gig) => (
+        {typedGigs.map((gig) => {
+          const confirmedCount = (gig.dispatches ?? []).filter(
+            (d) => d.status === "accepted" || d.status === "confirmed"
+          ).length;
+
+          return (
           <div key={gig.id} className="rounded-lg border border-slate-200 bg-white p-4">
             <div className="flex items-start justify-between">
               <div>
@@ -190,11 +195,16 @@ export default async function ProducerDashboardPage({
                   {formatCallTime(gig.call_time)}
                 </p>
               </div>
-              <span
-                className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLES[gig.status]}`}
-              >
-                {gig.status}
-              </span>
+              <div className="flex flex-col items-end gap-1">
+                <span
+                  className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLES[gig.status]}`}
+                >
+                  {gig.status}
+                </span>
+                <span className="text-xs text-slate-500">
+                  {confirmedCount} of {gig.headcount} confirmed
+                </span>
+              </div>
             </div>
 
             <div className="mt-3 border-t border-slate-100 pt-3">
@@ -219,7 +229,8 @@ export default async function ProducerDashboardPage({
               </ul>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { sendGigAcceptedEmail, sendGigInviteEmail } from "@/lib/email";
 import type { LocationState, RateUnit, RoleType } from "@/lib/types/database";
 
 async function requireUser() {
@@ -52,6 +53,29 @@ export async function createGig(formData: FormData) {
     p_gig_id: gig.id,
   });
 
+  if (!dispatchError) {
+    const { data: invited } = await supabase
+      .from("dispatches")
+      .select("profiles(full_name, email)")
+      .eq("gig_id", gig.id)
+      .eq("status", "invited");
+
+    await Promise.allSettled(
+      (invited ?? []).map((row) => {
+        const pa = row.profiles as unknown as { full_name: string; email: string } | null;
+        if (!pa) return Promise.resolve();
+        return sendGigInviteEmail({
+          to: pa.email,
+          paName: pa.full_name,
+          gigTitle: title,
+          locationState,
+          locationDetail: locationDetail || null,
+          callTime,
+        });
+      })
+    );
+  }
+
   revalidatePath("/producer/dashboard");
 
   if (dispatchError) {
@@ -66,8 +90,46 @@ export async function createGig(formData: FormData) {
 }
 
 export async function acceptDispatch(dispatchId: string) {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
   const { error } = await supabase.rpc("accept_dispatch", { p_dispatch_id: dispatchId });
+
+  if (!error) {
+    const { data: dispatch } = await supabase
+      .from("dispatches")
+      .select("gig_id")
+      .eq("id", dispatchId)
+      .single();
+
+    if (dispatch) {
+      const [{ data: gig }, { data: paProfile }, { count: filledCount }] = await Promise.all([
+        supabase.from("gigs").select("title, headcount, producer_id").eq("id", dispatch.gig_id).single(),
+        supabase.from("profiles").select("full_name").eq("id", user.id).single(),
+        supabase
+          .from("dispatches")
+          .select("*", { count: "exact", head: true })
+          .eq("gig_id", dispatch.gig_id)
+          .in("status", ["accepted", "confirmed"]),
+      ]);
+
+      if (gig && paProfile) {
+        const { data: producerProfile } = await supabase
+          .from("profiles")
+          .select("email")
+          .eq("id", gig.producer_id)
+          .single();
+
+        if (producerProfile) {
+          await sendGigAcceptedEmail({
+            to: producerProfile.email,
+            paName: paProfile.full_name,
+            gigTitle: gig.title,
+            filledCount: filledCount ?? 1,
+            headcount: gig.headcount,
+          });
+        }
+      }
+    }
+  }
 
   revalidatePath("/pa/dashboard");
 

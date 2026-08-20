@@ -12,6 +12,7 @@ export type Profile = {
   role: Role;
   full_name: string;
   phone: string | null;
+  email: string;
   created_at: string;
   updated_at: string;
 };

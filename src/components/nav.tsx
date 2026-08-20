@@ -9,6 +9,7 @@ export async function Nav() {
   } = await supabase.auth.getUser();
 
   let role: string | null = null;
+  let unreadCount = 0;
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
@@ -16,6 +17,13 @@ export async function Nav() {
       .eq("id", user.id)
       .single();
     role = profile?.role ?? null;
+
+    const { count } = await supabase
+      .from("notifications")
+      .select("*", { count: "exact", head: true })
+      .eq("recipient_id", user.id)
+      .is("read_at", null);
+    unreadCount = count ?? 0;
   }
 
   return (
@@ -56,6 +64,16 @@ export async function Nav() {
           {user && role === "admin" && (
             <Link href="/admin" className="hover:text-slate-900">
               Vetting Queue
+            </Link>
+          )}
+          {user && (
+            <Link href="/notifications" className="relative hover:text-slate-900">
+              Notifications
+              {unreadCount > 0 && (
+                <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-600 px-1 text-xs font-semibold text-white">
+                  {unreadCount}
+                </span>
+              )}
             </Link>
           )}
           {user && (
