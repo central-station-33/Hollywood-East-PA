@@ -19,6 +19,10 @@ export async function signUp(formData: FormData) {
   const phone = String(formData.get("phone") ?? "");
   const role = String(formData.get("role") ?? "pa") as Role;
 
+  if (!formData.get("agree_tos")) {
+    redirect("/signup?error=" + encodeURIComponent("You must agree to the Terms of Service and Privacy Policy."));
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     email,

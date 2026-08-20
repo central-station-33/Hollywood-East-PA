@@ -82,6 +82,21 @@ export default async function SignupPage({
           />
         </div>
 
+        <label className="flex items-start gap-2 text-sm text-slate-600">
+          <input type="checkbox" name="agree_tos" required className="mt-0.5 h-4 w-4" />
+          <span>
+            I agree to the{" "}
+            <a href="/terms" target="_blank" className="font-medium text-indigo-600">
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a href="/privacy" target="_blank" className="font-medium text-indigo-600">
+              Privacy Policy
+            </a>
+            .
+          </span>
+        </label>
+
         <button
           type="submit"
           className="w-full rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500"
