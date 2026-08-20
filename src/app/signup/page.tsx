@@ -6,13 +6,15 @@ export default async function SignupPage({
   searchParams: Promise<{ role?: string; error?: string }>;
 }) {
   const params = await searchParams;
-  const defaultRole = params.role === "producer" ? "producer" : "pa";
+  const defaultRole =
+    params.role === "producer" || params.role === "dept_head" ? params.role : "pa";
 
   return (
     <div className="mx-auto max-w-md px-6 py-16">
       <h1 className="text-2xl font-semibold text-slate-900">Create your account</h1>
       <p className="mt-1 text-sm text-slate-600">
-        Sign up as a Producer/UPM to post gigs, or as a PA/Coordinator to get dispatched.
+        Sign up as a Producer/UPM to post gigs, a PA/Coordinator to get dispatched, or a
+        Department Head to train and endorse PAs on their path to the union.
       </p>
 
       {params.error && (
@@ -20,7 +22,7 @@ export default async function SignupPage({
       )}
 
       <form action={signUp} className="mt-6 space-y-4">
-        <fieldset className="flex gap-4">
+        <fieldset className="flex flex-wrap gap-4">
           <label className="flex items-center gap-2 text-sm">
             <input
               type="radio"
@@ -40,6 +42,16 @@ export default async function SignupPage({
               className="h-4 w-4"
             />
             I&apos;m a Producer / UPM
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="radio"
+              name="role"
+              value="dept_head"
+              defaultChecked={defaultRole === "dept_head"}
+              className="h-4 w-4"
+            />
+            I&apos;m a Department Head
           </label>
         </fieldset>
 

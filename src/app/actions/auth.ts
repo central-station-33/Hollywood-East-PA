@@ -40,7 +40,9 @@ export async function signUp(formData: FormData) {
     redirect("/login?message=Check your email to confirm your account, then log in.");
   }
 
-  redirect(role === "producer" ? "/producer/dashboard" : "/pa/onboarding");
+  if (role === "producer") redirect("/producer/dashboard");
+  if (role === "dept_head") redirect("/depthead/onboarding");
+  redirect("/pa/onboarding");
 }
 
 export async function signIn(formData: FormData) {
@@ -68,6 +70,7 @@ export async function signIn(formData: FormData) {
 
   if (profile?.role === "producer") redirect("/producer/dashboard");
   if (profile?.role === "admin") redirect("/admin");
+  if (profile?.role === "dept_head") redirect("/depthead/dashboard");
   redirect("/pa/dashboard");
 }
 

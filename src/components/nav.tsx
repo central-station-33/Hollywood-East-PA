@@ -33,6 +33,9 @@ export async function Nav() {
           Hollywood East <span className="text-indigo-600">PA</span>
         </Link>
         <nav className="flex items-center gap-5 text-sm font-medium text-slate-600">
+          <Link href="/training" className="hover:text-slate-900">
+            Training
+          </Link>
           {!user && (
             <>
               <Link href="/login" className="hover:text-slate-900">
@@ -54,12 +57,25 @@ export async function Nav() {
               <Link href="/pa/onboarding" className="hover:text-slate-900">
                 My Profile
               </Link>
+              <Link href="/pa/training" className="hover:text-slate-900">
+                My Training
+              </Link>
             </>
           )}
           {user && role === "producer" && (
             <Link href="/producer/dashboard" className="hover:text-slate-900">
               Dashboard
             </Link>
+          )}
+          {user && role === "dept_head" && (
+            <>
+              <Link href="/depthead/dashboard" className="hover:text-slate-900">
+                Dashboard
+              </Link>
+              <Link href="/depthead/onboarding" className="hover:text-slate-900">
+                My Profile
+              </Link>
+            </>
           )}
           {user && role === "admin" && (
             <Link href="/admin" className="hover:text-slate-900">

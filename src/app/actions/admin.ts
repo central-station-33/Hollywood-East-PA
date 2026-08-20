@@ -35,3 +35,27 @@ export async function getTaxDocUrl(path: string): Promise<string | null> {
   if (error) return null;
   return data.signedUrl;
 }
+
+export async function setDeptHeadVerified(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const deptHeadId = String(formData.get("dept_head_id") ?? "");
+  const verified = formData.get("verified") === "true";
+  const notes = String(formData.get("notes") ?? "");
+
+  const { error } = await supabase
+    .from("dept_head_profiles")
+    .update({ verified, admin_notes: notes || null })
+    .eq("profile_id", deptHeadId);
+
+  revalidatePath("/admin");
+
+  if (error) {
+    redirect(`/admin?error=${encodeURIComponent(error.message)}`);
+  }
+  redirect("/admin?updated=1");
+}

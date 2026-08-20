@@ -132,6 +132,29 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <section className="border-t border-slate-200 bg-slate-900">
+        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-indigo-400">
+            New: Training &amp; Union Pathways
+          </p>
+          <h2 className="text-2xl font-semibold text-white">
+            From set-ready PA to dept-head-endorsed to union-eligible.
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-slate-300">
+            Department-specific training, reviewed and endorsed by verified department heads —
+            a real path toward the union of your choice.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <Link
+              href="/training"
+              className="rounded-md bg-white px-5 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100"
+            >
+              See the training pipeline
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

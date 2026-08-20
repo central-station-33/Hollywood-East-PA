@@ -1,4 +1,4 @@
-export type Role = "pa" | "producer" | "admin";
+export type Role = "pa" | "producer" | "admin" | "dept_head";
 export type RoleType = "set_pa" | "office_pa" | "coordinator" | "other";
 export type LocationState = "NY" | "NJ";
 export type RateUnit = "hour" | "day";
@@ -77,6 +77,56 @@ export type Notification = {
   created_at: string;
 };
 
+export type Department = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  union_path: string;
+  sort_order: number;
+  created_at: string;
+};
+
+export type TrainingModule = {
+  id: string;
+  department_id: string;
+  title: string;
+  description: string;
+  skills: string[];
+  estimated_hours: number | null;
+  sort_order: number;
+  created_at: string;
+};
+
+export type PaModuleProgress = {
+  pa_id: string;
+  module_id: string;
+  completed_at: string | null;
+  created_at: string;
+};
+
+export type DeptHeadProfile = {
+  profile_id: string;
+  department_id: string | null;
+  title: string | null;
+  company: string | null;
+  union_affiliation: string | null;
+  bio: string | null;
+  verified: boolean;
+  admin_notes: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Endorsement = {
+  id: string;
+  pa_id: string;
+  dept_head_id: string;
+  department_id: string;
+  note: string | null;
+  created_at: string;
+};
+
 type TableOf<Row> = {
   Row: Row;
   Insert: Partial<Row>;
@@ -93,6 +143,11 @@ export type Database = {
       gigs: TableOf<Gig>;
       dispatches: TableOf<Dispatch>;
       notifications: TableOf<Notification>;
+      departments: TableOf<Department>;
+      training_modules: TableOf<TrainingModule>;
+      pa_module_progress: TableOf<PaModuleProgress>;
+      dept_head_profiles: TableOf<DeptHeadProfile>;
+      endorsements: TableOf<Endorsement>;
     };
     Views: Record<string, never>;
     Functions: {
@@ -118,6 +173,20 @@ export type Database = {
       };
       cancel_gig: {
         Args: { p_gig_id: string };
+        Returns: undefined;
+      };
+      issue_endorsement: {
+        Args: { p_pa_id: string; p_department_id: string; p_note: string };
+        Returns: undefined;
+      };
+      upsert_dept_head_profile: {
+        Args: {
+          p_department_id: string | null;
+          p_title: string | null;
+          p_company: string | null;
+          p_union_affiliation: string | null;
+          p_bio: string | null;
+        };
         Returns: undefined;
       };
     };
