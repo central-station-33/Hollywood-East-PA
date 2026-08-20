@@ -21,9 +21,13 @@ into one flow.
 ## How it works
 
 1. **PAs get Set-Ready.** A PA creates a profile (home state, role types,
-   experience, payroll class), uploads a tax-residency document, and passes
-   a certified on-set micro-course (`src/lib/course.ts`). `pa_profiles.set_ready`
-   is a generated column: `tax_residency_status = 'verified' AND course passed`.
+   experience, payroll class) and passes a certified on-set micro-course
+   (`src/lib/course.ts`). `pa_profiles.set_ready` is a generated column:
+   currently just `course_completed_at is not null`. PAs can still upload a
+   tax-residency document and get it admin-verified, but that no longer
+   gates Set-Ready status — see `0004_disable_tax_residency_gate.sql` (the
+   requirement can be restored by re-adding the `tax_residency_status =
+   'verified'` clause to the generated expression).
 2. **Producers post a call time.** Creating a gig (`gigs` table) triggers the
    `dispatch_gig_to_matches` Postgres function, which invites every Set-Ready
    PA in the matching state + role type (`dispatches` rows, status `invited`).

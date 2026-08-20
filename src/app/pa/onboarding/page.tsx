@@ -45,7 +45,7 @@ export default async function PaOnboardingPage({
       >
         {pa?.set_ready
           ? "You're Set-Ready — eligible for gig dispatch."
-          : "Not yet Set-Ready. Verified tax residency + a passed micro-course are both required."}
+          : "Not yet Set-Ready. Pass the certified micro-course below to unlock dispatch eligibility."}
       </div>
 
       {params.error && (
@@ -162,7 +162,8 @@ export default async function PaOnboardingPage({
       <section className="mt-6 rounded-lg border border-slate-200 bg-white p-6">
         <h2 className="text-lg font-semibold text-slate-900">Tax residency verification</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Status:{" "}
+          Optional for now — not required for Set-Ready status, but useful to have on file
+          for tax-credit compliance. Status:{" "}
           <span className="font-medium">{pa?.tax_residency_status ?? "unsubmitted"}</span>
         </p>
         <form action={uploadTaxDoc} className="mt-4 flex items-center gap-3">
