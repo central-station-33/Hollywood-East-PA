@@ -52,11 +52,12 @@ export default function TermsPage() {
             3. PA Verification (&quot;Set-Ready&quot; Status)
           </h2>
           <p className="mt-2">
-            PAs may be asked to submit tax-residency and other verification documents as part of
-            onboarding. This documentation is used solely to determine dispatch eligibility (for
-            example, state tax-credit compliance) and is reviewed by Platform administrators. You
-            represent that any document you upload is authentic, current, and belongs to you.
-            Submitting false or altered documents is grounds for immediate account termination.
+            PAs become dispatch-eligible (&quot;Set-Ready&quot;) by completing a certified on-set
+            micro-course. The Platform may in the future request additional verification
+            documentation as part of onboarding; any such documentation would be used solely to
+            determine dispatch eligibility and reviewed by Platform administrators. You represent
+            that any information or document you submit is accurate, current, and belongs to you.
+            Submitting false or altered information is grounds for immediate account termination.
           </p>
         </section>
 

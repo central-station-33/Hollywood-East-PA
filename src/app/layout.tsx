@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Hollywood East PA — Vetted PAs & Coordinators for NY/NJ Productions",
   description:
-    "Tech-enabled, tax-credit-verified, set-ready PA and Coordinator staffing for the Hollywood East corridor.",
+    "Tech-enabled, set-ready PA and Coordinator staffing for the Hollywood East corridor.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

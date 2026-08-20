@@ -42,36 +42,6 @@ export async function updatePaProfile(formData: FormData) {
   redirect("/pa/onboarding?saved=1");
 }
 
-export async function uploadTaxDoc(formData: FormData) {
-  const { supabase, user } = await requireUser();
-
-  const file = formData.get("tax_doc");
-  if (!(file instanceof File) || file.size === 0) {
-    redirect("/pa/onboarding?error=Choose a file first");
-  }
-
-  const path = `${user.id}/${Date.now()}-${(file as File).name}`;
-  const { error: uploadError } = await supabase.storage
-    .from("tax-docs")
-    .upload(path, file as File, { upsert: true });
-
-  if (uploadError) {
-    redirect(`/pa/onboarding?error=${encodeURIComponent(uploadError.message)}`);
-  }
-
-  const { error } = await supabase
-    .from("pa_profiles")
-    .update({ tax_residency_doc_path: path, tax_residency_status: "pending" })
-    .eq("profile_id", user.id);
-
-  if (error) {
-    redirect(`/pa/onboarding?error=${encodeURIComponent(error.message)}`);
-  }
-
-  revalidatePath("/pa/onboarding");
-  redirect("/pa/onboarding?doc_uploaded=1");
-}
-
 export async function submitCourse(formData: FormData) {
   const { supabase, user } = await requireUser();
 

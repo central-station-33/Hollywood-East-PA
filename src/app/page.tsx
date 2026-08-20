@@ -10,10 +10,6 @@ const COMPARISON_ROWS: Array<{ metric: string; values: [string, string, string, 
     values: ["No (assumed)", "No", "No", "Yes — certified micro-course"],
   },
   {
-    metric: "NY/NJ tax proofing",
-    values: ["Manual", "No", "No", "Yes — pre-verified residency docs"],
-  },
-  {
     metric: "Payroll / workers' comp",
     values: ["Included", "No", "No", "Tracked, W-2/1099 ready"],
   },
@@ -38,8 +34,8 @@ export default function Home() {
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600">
             Hollywood East PA replaces the 10&nbsp;PM Facebook post and the unmanaged job board with a
-            tech-enabled staffing platform: tax-credit-verified residency, certified on-set
-            training, and automatic matching for every call time in the NY/NJ corridor.
+            tech-enabled staffing platform: certified on-set training and automatic matching for
+            every call time in the NY/NJ corridor.
           </p>
           <div className="mt-8 flex justify-center gap-4">
             <Link
@@ -64,8 +60,7 @@ export default function Home() {
         </h2>
         <p className="mx-auto mt-2 max-w-2xl text-center text-slate-600">
           Full-service agencies with high overhead, or self-serve job boards and Facebook groups
-          with zero vetting. Hollywood East PA sits at the intersection of technology, training, and
-          tax-credit compliance.
+          with zero vetting. Hollywood East PA sits at the intersection of technology and training.
         </p>
 
         <div className="mt-10 overflow-x-auto rounded-lg border border-slate-200 bg-white">
@@ -110,8 +105,8 @@ export default function Home() {
             <div className="mb-3 text-sm font-semibold text-indigo-600">01</div>
             <h3 className="text-lg font-semibold text-slate-900">PAs get set-ready</h3>
             <p className="mt-2 text-sm text-slate-600">
-              PAs build a profile, upload NY/NJ residency documentation for tax-credit compliance,
-              and pass a certified on-set micro-course before they&apos;re eligible for dispatch.
+              PAs build a profile and pass a certified on-set micro-course before they&apos;re
+              eligible for dispatch.
             </p>
           </div>
           <div>
@@ -126,8 +121,8 @@ export default function Home() {
             <div className="mb-3 text-sm font-semibold text-indigo-600">03</div>
             <h3 className="text-lg font-semibold text-slate-900">First accept, confirmed</h3>
             <p className="mt-2 text-sm text-slate-600">
-              The first PA to accept is locked in and the roster updates in real time — with
-              verified compliance status visible to the production office.
+              The first PA to accept is locked in and the roster updates in real time — visible
+              to the production office immediately.
             </p>
           </div>
         </div>

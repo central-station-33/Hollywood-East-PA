@@ -79,7 +79,7 @@ export async function Nav() {
           )}
           {user && role === "admin" && (
             <Link href="/admin" className="hover:text-slate-900">
-              Vetting Queue
+              Dept Head Verification
             </Link>
           )}
           {user && (
